@@ -1,0 +1,49 @@
+-- Concert Rankings Database — Seed Data
+-- NOTE: Run this AFTER schema.sql !!
+
+-- ARTISTS
+INSERT INTO artists (name, genre, formed_year, country) VALUES
+('itsmurph',          'EDM',              2022, 'USA'),
+('Balu Brigada',      'Indie Rock',       2016, 'New Zealand'),
+('Tame Impala',       'Psychedelic Rock', 2007, 'Australia'),
+('Kendrick Lamar',    'Rap',              2003, 'USA'),
+('SZA',               'R&B/Pop',          2011, 'USA'),
+('Malcolm Todd',      'Pop',              2022, 'USA');
+
+-- VENUES
+INSERT INTO venues (name, city, country, capacity) VALUES
+('Outsidelands at Golden Gate Park',           'San Francisco',      'USA',        75000),
+('Outsidelands at Golden Gate Park',           'San Francisco',      'USA',        75000),
+('Oakland Arena'                                'Oakland',           'USA',        19500),
+('Outsidelands at Golden Gate Park',           'San Francisco',      'USA',        75000),
+('Gila River Arena',                           'Phoenix',            'USA',        19000),
+('Outsidelands at Golden Gate Park',           'San Francisco',      'USA',        75000);
+
+-- USERS
+INSERT INTO users (username, join_date) VALUES
+('lav',        '2024-01-15'),
+('musicfan22', '2024-03-02'),
+('concertgoer','2024-05-20');
+
+-- CONCERTS
+INSERT INTO concerts (artist_id, venue_id, concert_date, tour_name) VALUES
+(1, 1, '2026-08-08', 'OSL 2026'),
+(2, 1, '2026-08-09', 'OSL 2026'),
+(3, 2, '2026-04-10', 'Currents Live'),
+(4, 1, '2023-08-09', 'OSL 2023'),
+(5, 5, '2024-06-25', 'Grand National Tour'),
+(6, 1, '2026-08-08', 'OSL 2026');
+
+-- RANKINGS
+INSERT INTO rankings (user_id, concert_id, rating, review_text, ranked_date) VALUES
+(1, 1, 9, 'Great energy in the crowd, excited for his next show', '2026-08-08'),
+(1, 3, 10, 'Insane that this was their first festival', '2026-08-09'),
+(1, 4, 8, 'Insane lasers, genuinelt life changing', '2026-04-10'),
+(2, 2, 10, 'Such an artistic performance, truly beautiful', '2023-08-02'),
+(3, 5, 8, 'New albums will never be ctrl and that is okay', '2024-06-25'),
+(3, 6, 5, 'Vocals were okay to be honest', '2026-08-08');
+
+-- SETLISTS (sample for one concert)
+INSERT INTO setlists (concert_id, song_name, set_position, is_encore) VALUES
+(1, 'H*** and i like it',        1, FALSE),
+(1, 'Chemicals',  2, FALSE);
