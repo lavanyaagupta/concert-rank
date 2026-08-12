@@ -1,0 +1,101 @@
+-- Top-rated concerts overall
+SELECT
+    c.concert_id,
+    a.name AS artist,
+    v.name AS venue,
+    c.concert_date,
+    ROUND(AVG(r.rating), 2) AS avg_rating,
+    COUNT(r.ranking_id) AS num_ratings
+FROM concerts c
+JOIN artists a ON c.artist_id = a.artist_id
+JOIN venues v ON c.venue_id = v.venue_id
+JOIN rankings r ON c.concert_id = r.concert_id
+GROUP BY c.concert_id, a.name, v.name, c.concert_date
+HAVING COUNT(r.ranking_id) >= 1
+ORDER BY avg_rating DESC;
+
+-- User's personal top 5 concerts
+SELECT
+    u.username,
+    a.name AS artist,
+    c.concert_date,
+    r.rating,
+    r.review_text
+FROM rankings r
+JOIN users u ON r.user_id = u.user_id
+JOIN concerts c ON r.concert_id = c.concert_id
+JOIN artists a ON c.artist_id = a.artist_id
+WHERE u.username = 'lav'
+ORDER BY r.rating DESC
+LIMIT 5;
+
+-- Average rating per artist, ranked highest to lowest
+SELECT
+    a.name AS artist,
+    ROUND(AVG(r.rating), 2) AS avg_rating,
+    COUNT(DISTINCT c.concert_id) AS concerts_played
+FROM artists a
+JOIN concerts c ON a.artist_id = c.artist_id
+JOIN rankings r ON c.concert_id = r.concert_id
+GROUP BY a.name
+ORDER BY avg_rating DESC;
+
+-- Venue popularity — number of concerts hosted and avg rating
+SELECT
+    v.name AS venue,
+    v.city,
+    COUNT(DISTINCT c.concert_id) AS concerts_hosted,
+    ROUND(AVG(r.rating), 2) AS avg_rating
+FROM venues v
+LEFT JOIN concerts c ON v.venue_id = c.venue_id
+LEFT JOIN rankings r ON c.concert_id = r.concert_id
+GROUP BY v.name, v.city
+ORDER BY concerts_hosted DESC;
+
+-- Rank every concert within each user's own list 
+SELECT
+    u.username,
+    a.name AS artist,
+    c.concert_date,
+    r.rating,
+    RANK() OVER (PARTITION BY u.username ORDER BY r.rating DESC) AS personal_rank
+FROM rankings r
+JOIN users u ON r.user_id = u.user_id
+JOIN concerts c ON r.concert_id = c.concert_id
+JOIN artists a ON c.artist_id = a.artist_id
+ORDER BY u.username, personal_rank;
+
+-- Concerts that have never been ranked by anyone (LEFT JOIN + IS NULL)
+SELECT
+    a.name AS artist,
+    v.name AS venue,
+    c.concert_date
+FROM concerts c
+JOIN artists a ON c.artist_id = a.artist_id
+JOIN venues v ON c.venue_id = v.venue_id
+LEFT JOIN rankings r ON c.concert_id = r.concert_id
+WHERE r.ranking_id IS NULL;
+
+-- Full setlist for a specific concert, in performance order
+SELECT
+    a.name AS artist,
+    c.concert_date,
+    s.set_position,
+    s.song_name,
+    s.is_encore
+FROM setlists s
+JOIN concerts c ON s.concert_id = c.concert_id
+JOIN artists a ON c.artist_id = a.artist_id
+WHERE c.concert_id = 1
+ORDER BY s.set_position;
+
+-- Users who consistently rate concerts higher than the overall average
+SELECT
+    u.username,
+    ROUND(AVG(r.rating), 2) AS user_avg_rating,
+    (SELECT ROUND(AVG(rating), 2) FROM rankings) AS global_avg_rating
+FROM rankings r
+JOIN users u ON r.user_id = u.user_id
+GROUP BY u.username
+HAVING AVG(r.rating) > (SELECT AVG(rating) FROM rankings)
+ORDER BY user_avg_rating DESC;
