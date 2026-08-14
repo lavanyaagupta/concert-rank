@@ -23,10 +23,8 @@ venues ──┘              ├─< rankings >-users
 ## Files
 
 - `schema.sql` — table definitions, keys, constraints, indexes
-- `seed_data.sql` — sample data (6 artists, 5 venues, 6 concerts, 3 users, 7 rankings)
-- `queries.sql` — 8 example queries: top-rated concerts, personal top 5,
-  artist averages, venue popularity, per-user ranking (window function),
-  unranked concerts, full setlist, above-average raters
+- `seed_data.sql` — sample data (6 artists, 3 venues, 6 concerts, 3 users, 6 rankings)
+- `queries.sql` — 8 example queries: top-rated concerts, personal top 5, artist averages, venue popularity, per-user ranking (window function), unranked concerts, full setlist, above-average raters
 
 ## Getting Started
 
